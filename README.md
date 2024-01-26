@@ -3,14 +3,17 @@
 
 
 
-to start the  program do:
-#  docker-compose up -d
-
-
-#  goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" up
-
-to down the program
- # docker-compose down
-
-
-# goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" up  down
+- to start the  program do:
+```
+ docker-compose up -d
+```
+```
+goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" up
+```
+- to down the program
+```
+ docker-compose down
+```
+```
+ goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" up  down
+```
