@@ -3,7 +3,7 @@
 
 
 
-- to start the  program do:
+- to start docker do:
 ```
  docker-compose up -d
 ```

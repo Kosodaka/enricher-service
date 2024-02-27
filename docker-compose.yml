@@ -1,4 +1,5 @@
-version: '3.5'
+
+version: '3.9'
 
 services:
   postgres:
@@ -12,33 +13,35 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_SSL_MODE: ${POSTGRES_SSL_MODE}
     volumes:
-      - postgres:/data/postgres
+      - postgres_db:/var/lib/postgresql/data
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
-    networks:
-      - postgres
-    restart: unless-stopped
 
-  pgadmin:
-    container_name: pgadmin_container
-    image: dpage/pgadmin4
+
+
+  api:
+    build:
+      dockerfile: Dockerfile
+    container_name: api
+    env_file:
+      - .env
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@mymail.ru
-      PGADMIN_DEFAULT_PASSWORD: qwerty
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-      - pgadmin:/var/lib/pgadmin
-
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_SSL_MODE: ${POSTGRES_SSL_MODE}
+      ENV: ${ENV}
+      HTTP_PORT: ${HTTP_PORT}
+      HTTP_HOST: ${HTTP_HOST}
+      AGE_API_URL: ${AGE_API_URL}
+      GENDER_API_URL: ${GENDER_API_URL}
+      NATIONALITY_API_URL: ${NATIONALITY_API_URL}
     ports:
-      - 80:80
-    networks:
+      - "${HTTP_PORT}:${HTTP_PORT}"
+    depends_on:
       - postgres
-    restart: unless-stopped
-
-networks:
-  postgres:
-    driver: bridge
-
 volumes:
-  postgres:
-  pgadmin:
+  postgres_db:
+
