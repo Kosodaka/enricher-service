@@ -1,39 +1,87 @@
 package config
 
 import (
-	"github.com/spf13/viper"
+	"fmt"
+	"github.com/joho/godotenv"
+	"os"
 )
 
 type Config struct {
-	PostgresDSN       string `mapstructure:"DSN"`
-	Env               string `mapstructure:"ENV"`
-	HttpPort          string `mapstructure:"HTTP_PORT"`
-	HttpHost          string `mapstructure:"HTTP_HOST"`
-	AgeApiUrl         string `mapstructure:"AGE_API_URL"`
-	GenderApiUrl      string `mapstructure:"GENDER_API_URL"`
-	NationalityApiUrl string `mapstructure:"NATIONALITY_API_URL"`
+	PostgresDSN       string
+	Env               string
+	HttpPort          string
+	HttpHost          string
+	AgeApiUrl         string
+	GenderApiUrl      string
+	NationalityApiUrl string
 }
 
-/*// Get Postgres Url
-func (c *Config) GetPsqlUrl() string {
-	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", c.PostgresUser, c.PostgresPass, c.PostgresHost, c.PostgresPort, c.PostgresDB, c.PostgresSSLMode)
-}*/
+func (c *Config) GetHTTPPort() string {
+	return c.HttpPort
+}
 
-// LoadConfig use viper lib to work with env
-func LoadConfig(path string) (Config, error) {
-	var config Config
-	viper.AddConfigPath(path)
-	viper.SetConfigName(".env")
-	viper.SetConfigType("env")
+func (c *Config) GetEnv() string {
+	return c.Env
+}
 
-	viper.AutomaticEnv() // Allow automatically override values
+func (c *Config) GetAgeApiURL() string {
+	return c.AgeApiUrl
+}
+func (c *Config) GetGenderApiURL() string {
+	return c.GenderApiUrl
+}
+func (c *Config) GetNationalityApiURL() string {
+	return c.NationalityApiUrl
+}
 
-	err := viper.ReadInConfig()
+func LoadEnv(filenames ...string) error {
+	const op = "pkg.config.LoadEnv"
+	err := godotenv.Load(filenames...)
 	if err != nil {
-		return config, err
+		return fmt.Errorf("%s: %s", op, err)
+	}
+	return nil
+}
+
+func LoadConfig() *Config {
+	cfg := &Config{
+		PostgresDSN:       "",
+		Env:               "local",
+		HttpHost:          "localhost",
+		AgeApiUrl:         "https://api.agify.io/",
+		GenderApiUrl:      "https://api.genderize.io/",
+		NationalityApiUrl: "https://api.nationalize.io/",
 	}
 
-	err = viper.Unmarshal(&config)
+	postgresDsn := os.Getenv("DSN")
+	env := os.Getenv("ENV")
+	httpPort := os.Getenv("HTTP_PORT")
+	httpHost := os.Getenv("HTTP_HOST")
+	ageUrl := os.Getenv("AGE_API_URL")
+	genderUrl := os.Getenv("GENDER_API_URL")
+	nationalityUrl := os.Getenv("NATIONALITY_API_URL")
 
-	return config, err
+	if postgresDsn != "" {
+		cfg.PostgresDSN = postgresDsn
+	}
+	if env != "" {
+		cfg.Env = env
+	}
+	if httpPort != "" {
+		cfg.HttpPort = httpPort
+	}
+	if httpHost != "" {
+		cfg.HttpHost = httpHost
+	}
+	if ageUrl != "" {
+		cfg.AgeApiUrl = ageUrl
+	}
+	if genderUrl != "" {
+		cfg.GenderApiUrl = genderUrl
+	}
+	if nationalityUrl != "" {
+		cfg.NationalityApiUrl = nationalityUrl
+	}
+
+	return cfg
 }

@@ -2,18 +2,30 @@
 Сервис, который получает по api ФИО в виде JSON объектов и из открытых api дополняет ответ наиболее вероятными возрастом, полом и национальностью и сохраняет данные в БД.
 
 
+-to run locale:
+```
+ make run-windows
+ or 
+ make run-linux
+```
 
-- to start the  program do:
+- to run service in docker-container:
 ```
- docker-compose up -d
+ make doker-up
 ```
+-to make migrations
 ```
-goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" up
+make migrate
 ```
-- to down the program
+- to down migrations
 ```
- docker-compose down
+ make migrate-down
 ```
+-to run tests 
 ```
- goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" up  down
+ make test 
 ```
+
+
+
+

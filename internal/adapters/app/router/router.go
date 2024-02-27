@@ -1,9 +1,12 @@
 package router
 
 import (
-	"github.com/Kosodaka/enricher-service/pkg/config"
 	"github.com/gin-gonic/gin"
 )
+
+type Config interface {
+	GetHTTPPort() string
+}
 
 type personRouter interface {
 	AddPerson(c *gin.Context)
@@ -33,16 +36,15 @@ func (r *Router) Run() error {
 	return r.Server.Run(":" + r.Port)
 }
 
-func NewRouter(cfg config.Config, p personRouter) *Router {
+func NewRouter(cfg Config, p personRouter) *Router {
 	router := &Router{
 		PersonRouter: p,
-		Port:         cfg.HttpPort,
+		Port:         cfg.GetHTTPPort(),
 	}
 
 	router.Server = gin.Default()
 	router.Server.Use(gin.Recovery())
 
 	router.InitRoutes()
-
 	return router
 }

@@ -56,9 +56,8 @@ func (r *personRepository) GetPerson(ctx context.Context, id int) (*model.Person
 }
 
 func (r *personRepository) GetPersons(ctx context.Context, data *model.Person) ([]model.Person, error) {
-	stmt := `SELECT id, name, surname, patronymic, age, gender, nationality FROM person WHERE name = :name AND surname = :surname 
-             AND patronymic = :patronymic AND age = :age AND gender = :gender AND nationality = :nationality`
-	fmt.Println(stmt)
+	stmt := `SELECT id, name, surname, patronymic, age, gender, nationality FROM person WHERE name = name AND surname = surname 
+             AND patronymic = patronymic AND age = age AND gender = gender AND nationality = nationality`
 	persons := []model.Person{}
 	rows, err := r.db.NamedQueryContext(ctx, stmt, data)
 	if err != nil {

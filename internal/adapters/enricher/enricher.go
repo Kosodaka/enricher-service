@@ -5,10 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Kosodaka/enricher-service/internal/domain/ports/enricher"
-	"github.com/Kosodaka/enricher-service/pkg/config"
 	"net/http"
 	"sync"
 )
+
+type Configer interface {
+	GetAgeApiURL() string
+	GetGenderApiURL() string
+	GetNationalityApiURL() string
+}
 
 type Enricher struct {
 	AgeUrl         string `json:"age_url"`
@@ -31,11 +36,11 @@ type PersonGender struct {
 	Gender string `json:"gender"`
 }
 
-func NewEnricher(cfg config.Config) *Enricher {
+func NewEnricher(cfg Configer) *Enricher {
 	return &Enricher{
-		AgeUrl:         cfg.AgeApiUrl,
-		GenderUrl:      cfg.GenderApiUrl,
-		NationalityUrl: cfg.NationalityApiUrl,
+		AgeUrl:         cfg.GetAgeApiURL(),
+		GenderUrl:      cfg.GetGenderApiURL(),
+		NationalityUrl: cfg.GetNationalityApiURL(),
 		Client:         &http.Client{},
 	}
 }
@@ -86,9 +91,10 @@ func (e Enricher) Enrich(ctx context.Context, name string) (*enricher.EnrichData
 				return
 			}
 			if len(nationalities.Country) == 0 {
-				errCh <- fmt.Errorf("No nationality")
+				errCh <- fmt.Errorf("no nationality")
 				return
 			}
+			// The first nationality from api url has the most probability
 			nationality = &PersonNationality{CountryId: nationalities.Country[0].CountryId, Probability: nationalities.Country[0].Probability}
 		}()
 
@@ -115,6 +121,7 @@ func (e Enricher) Enrich(ctx context.Context, name string) (*enricher.EnrichData
 
 }
 
+// Come to api with request on env:AGE_API_URL and get Age
 func (e Enricher) getAge(ctx context.Context, name string) (*PersonAge, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s?name=%s", e.AgeUrl, name), nil)
 	if err != nil {
@@ -137,6 +144,7 @@ func (e Enricher) getAge(ctx context.Context, name string) (*PersonAge, error) {
 	return age, nil
 }
 
+// Come to api with request on env:GENDER_API_URL and get gender
 func (e Enricher) getGender(ctx context.Context, name string) (*PersonGender, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s?name=%s", e.GenderUrl, name), nil)
 	if err != nil {
@@ -159,6 +167,7 @@ func (e Enricher) getGender(ctx context.Context, name string) (*PersonGender, er
 	return gender, nil
 }
 
+// Come to api with request on env:NATIONALITY_API_URL get nationality
 func (e Enricher) getNationality(ctx context.Context, name string) (*PersonNationalities, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s?name=%s", e.NationalityUrl, name), nil)
 	if err != nil {
