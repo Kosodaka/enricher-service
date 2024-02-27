@@ -1,7 +1,7 @@
 # enricher-service
 Сервис, который получает по api ФИО в виде JSON объектов и из открытых api дополняет ответ наиболее вероятными возрастом, полом и национальностью и сохраняет данные в БД.
 
-to make build use git bash or linux console
+to make build or run use git bash or linux console
 
 -to run locale:
 ```
