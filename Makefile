@@ -2,7 +2,7 @@
 BINARY_NAME=enricher-service
 .DEFAULT_GOAL:=run
 #to make build use git bash or linux console
-#build app for windows and linux os and save in ./target directory
+#build app for windows and linux os and save in ./ directory
 build:
 	 GOOS=windows GOARCH=amd64 go build -o ${BINARY_NAME}-windows.exe cmd/app/main.go
 	 GOOS=linux GOARCH=amd64 go build -o ${BINARY_NAME}-linux.exe cmd/app/main.go
