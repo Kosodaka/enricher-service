@@ -7,6 +7,7 @@ import (
 	"github.com/Kosodaka/enricher-service/internal/domain/model"
 	domainservice "github.com/Kosodaka/enricher-service/internal/domain/service"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -15,60 +16,77 @@ type PersonRouter struct {
 	service service.PersonService
 }
 
-func (r PersonRouter) GetPerson(c *gin.Context) {
+type IdResponse struct {
+	Id int `json:"id,string,omitempty"`
+}
+
+func NewPersonRouter(s service.PersonService) *PersonRouter {
+	return &PersonRouter{
+		service: s,
+	}
+}
+
+func (r *PersonRouter) GetPerson(c *gin.Context) {
 	op := "app.GetPerson"
 	idStr := c.Param("id")
 	if idStr == "" {
-		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf(" no id in params - %s ", op))
+		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf(" no id in params "))
+		log.Print(op, " :no id params")
 		return
 	}
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : invalid id - %s ", err, op))
+		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : invalid id", err))
+		log.Print(op, " :invalid id")
 		return
 	}
 
 	person, err := r.service.GetPerson(c.Request.Context(), id)
 	if err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : failed to get person in service- %s ", err, op))
+		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : failed to get person in service", err))
+		log.Print(op, " :failed to get person in service")
 		return
 	}
 	c.JSON(http.StatusOK, person)
 }
 
-func (r PersonRouter) UpdatePerson(c *gin.Context) {
+func (r *PersonRouter) UpdatePerson(c *gin.Context) {
 	op := "app.UpdatePerson"
 	request := &model.Person{}
 	if err := c.ShouldBind(&request); err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : failed to update person - %s ", err, op))
+		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : failed to update person", err))
+		log.Print(op, " :failed to update person")
 		return
 	}
 
 	err := r.service.UpdatePerson(c.Request.Context(), request)
 	if err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s: failed to update person in service - %s ", err, op))
+		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s: failed to update person in service", err))
+		log.Print(op, " :failed to update person in service")
 		return
 	}
 	c.JSON(http.StatusOK, response.StatusResponse{"ok"})
 }
 
-func (r PersonRouter) DeletePerson(c *gin.Context) {
+func (r *PersonRouter) DeletePerson(c *gin.Context) {
 	op := "app.DeletePerson"
-	request := &response.IdResponse{}
+	request := &IdResponse{}
 	if err := c.ShouldBind(&request); err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : failed to delete person - %s ", err, op))
+		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : failed to delete person", err))
+		log.Print(op, " :failed to delete person")
 		return
 	}
 
 	err := r.service.DeletePerson(c.Request.Context(), request.Id)
 	if err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : failed to delete person in service - %s ", err, op))
+		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : failed to delete person in service", err))
+		log.Print(op, " :failed to delete person")
 		return
 	}
 	c.JSON(http.StatusOK, response.StatusResponse{"ok"})
 }
 
-func (r PersonRouter) GetPersons(c *gin.Context) {
+func (r *PersonRouter) GetPersons(c *gin.Context) {
 	op := "app.GetPersons"
 	data := &model.Person{}
 	data.Name = c.Query("name")
@@ -78,11 +96,13 @@ func (r PersonRouter) GetPersons(c *gin.Context) {
 	if ageStr != "" {
 		ageInt, err := strconv.Atoi(ageStr)
 		if err != nil {
-			response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : invalid age - %s ", err, op))
+			response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : invalid age", err))
+			log.Print(op, " :invalid age")
 			return
 		}
 		if ageInt < 0 {
-			response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : invalid age- %s ", err, op))
+			response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : invalid age", err))
+			log.Print(op, " :invalid age")
 			return
 		}
 		data.Age = ageInt
@@ -92,29 +112,26 @@ func (r PersonRouter) GetPersons(c *gin.Context) {
 
 	persons, err := r.service.GetPersons(c.Request.Context(), data)
 	if err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : failed to get persons - %s ", err, op))
+		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : failed to get persons", err))
+		log.Print(op, " :failed to get persons")
 		return
 	}
 	c.JSON(http.StatusOK, persons)
 }
 
-func NewPersonRouter(s service.PersonService) *PersonRouter {
-	return &PersonRouter{
-		service: s,
-	}
-}
-
-func (r PersonRouter) AddPerson(c *gin.Context) {
+func (r *PersonRouter) AddPerson(c *gin.Context) {
 	op := "app.AddPerson"
 	var input domainservice.PersonFullName
 	if err := c.BindJSON(&input); err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : failed to add person - %s ", err, op))
+		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : failed to add person", err))
+		log.Print(op, " :failed to add persons")
 		return
 	}
-	fmt.Println(114, c)
+
 	id, err := r.service.AddPerson(c.Request.Context(), &input)
 	if err != nil {
-		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s: failed to add person to storage- %s ", err, op))
+		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s: failed to add person to storage", err))
+		log.Print(op, " :failed to add persons to storage")
 		return
 	}
 
