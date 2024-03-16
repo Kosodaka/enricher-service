@@ -75,7 +75,7 @@ func (s Service) GetPerson(ctx context.Context, id int) (*model.Person, error) {
 	}
 	person, err := s.Repository.GetPerson(ctx, id)
 	if err != nil {
-
+		return nil, err
 	}
 	logger.Debug("person was successfully got", slog.Int("id", id))
 	return person, nil

@@ -30,7 +30,7 @@ func (r *PersonRouter) GetPerson(c *gin.Context) {
 	op := "app.GetPerson"
 	idStr := c.Param("id")
 	if idStr == "" {
-		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf(" no id in params "))
+		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("no id in params"))
 		log.Print(op, " :no id params")
 		return
 	}
@@ -65,7 +65,7 @@ func (r *PersonRouter) UpdatePerson(c *gin.Context) {
 		log.Print(op, " :failed to update person in service")
 		return
 	}
-	c.JSON(http.StatusOK, response.StatusResponse{"ok"})
+	c.JSON(http.StatusOK, response.StatusResponse{Status: "ok"})
 }
 
 func (r *PersonRouter) DeletePerson(c *gin.Context) {
@@ -83,7 +83,7 @@ func (r *PersonRouter) DeletePerson(c *gin.Context) {
 		log.Print(op, " :failed to delete person")
 		return
 	}
-	c.JSON(http.StatusOK, response.StatusResponse{"ok"})
+	c.JSON(http.StatusOK, response.StatusResponse{Status: "ok"})
 }
 
 func (r *PersonRouter) GetPersons(c *gin.Context) {
