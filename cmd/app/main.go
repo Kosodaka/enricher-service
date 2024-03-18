@@ -21,7 +21,7 @@ func main() {
 	cfg := config.LoadConfig()
 
 	logger := logger.SetupLogger(cfg.GetEnv())
-
+	valid := validator.NewValidator()
 	logger.Info("start", slog.String("env", cfg.Env))
 	enricher := enricher.NewEnricher(cfg)
 	psql := postgres.NewPsql(cfg.PostgresDSN)
@@ -31,7 +31,8 @@ func main() {
 	}
 
 	personRepository := repository.NewPersonPostgres(db)
-	personService := service.NewService(personRepository, enricher, logger, validator.NewValidator())
+	personService := service.NewService()
+	personService.Init(service.SetRepository(personRepository), service.SetEnricher(enricher), service.SetLogger(logger), service.SetValidator(valid))
 	personRouter := app.NewPersonRouter(personService)
 	app := router.NewRouter(cfg, personRouter)
 	if err := app.Run(); err != nil {

@@ -1,9 +1,9 @@
 package validator
 
 import (
+	"github.com/Kosodaka/enricher-service/internal/domain/dto"
 	domainErr "github.com/Kosodaka/enricher-service/internal/domain/errors"
 	"github.com/Kosodaka/enricher-service/internal/domain/model"
-	"github.com/Kosodaka/enricher-service/internal/domain/service"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"reflect"
 	"testing"
@@ -14,12 +14,12 @@ func TestValidateDataToAdd(t *testing.T) {
 
 	cases := []struct {
 		name   string
-		data   *service.PersonFullName
+		data   *dto.AddPersonDTO
 		expErr error
 	}{
 		{
 			name: "valid_data",
-			data: &service.PersonFullName{
+			data: &dto.AddPersonDTO{
 				Name:       "Dmitriy",
 				Surname:    "Ushakov",
 				Patronymic: "Vasilevich",
@@ -28,7 +28,7 @@ func TestValidateDataToAdd(t *testing.T) {
 		},
 		{
 			name: "valid_without_patronymic",
-			data: &service.PersonFullName{
+			data: &dto.AddPersonDTO{
 				Name:       "Dmitriy",
 				Surname:    "Ushakov",
 				Patronymic: "",
@@ -37,7 +37,7 @@ func TestValidateDataToAdd(t *testing.T) {
 		},
 		{
 			name: "invalid_name_lowercase",
-			data: &service.PersonFullName{
+			data: &dto.AddPersonDTO{
 				Name:    "dmitriy",
 				Surname: "Ushakov",
 			},
@@ -45,7 +45,7 @@ func TestValidateDataToAdd(t *testing.T) {
 		},
 		{
 			name: "invalid_name_mixed_uppercase",
-			data: &service.PersonFullName{
+			data: &dto.AddPersonDTO{
 				Name:    "DmitRiy",
 				Surname: "Ushakov",
 			},
@@ -53,7 +53,7 @@ func TestValidateDataToAdd(t *testing.T) {
 		},
 		{
 			name: "invalid_empty_name_field",
-			data: &service.PersonFullName{
+			data: &dto.AddPersonDTO{
 				Name:    "",
 				Surname: "Ushakov",
 			},
@@ -61,7 +61,7 @@ func TestValidateDataToAdd(t *testing.T) {
 		},
 		{
 			name: "invalid_surname_lowercase",
-			data: &service.PersonFullName{
+			data: &dto.AddPersonDTO{
 				Name:    "Dmitriy",
 				Surname: "ushakov",
 			},
@@ -69,7 +69,7 @@ func TestValidateDataToAdd(t *testing.T) {
 		},
 		{
 			name: "invalid_surname_mixed_uppercase",
-			data: &service.PersonFullName{
+			data: &dto.AddPersonDTO{
 				Name:    "Dmitriy",
 				Surname: "UsHakov",
 			},
@@ -77,7 +77,7 @@ func TestValidateDataToAdd(t *testing.T) {
 		},
 		{
 			name: "invalid_empty_surname_field",
-			data: &service.PersonFullName{
+			data: &dto.AddPersonDTO{
 				Name:    "Dmitriy",
 				Surname: "",
 			},

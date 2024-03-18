@@ -18,7 +18,6 @@ services:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
 
 
-
   api:
     build:
       dockerfile: Dockerfile

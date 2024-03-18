@@ -2,8 +2,8 @@ package validator
 
 import (
 	"errors"
+	"github.com/Kosodaka/enricher-service/internal/domain/dto"
 	"github.com/Kosodaka/enricher-service/internal/domain/model"
-	"github.com/Kosodaka/enricher-service/internal/domain/service"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"regexp"
 )
@@ -22,7 +22,7 @@ func (Validator) ValidateId(id int) error {
 	return nil
 }
 
-func (Validator) ValidateDataToAdd(data *service.PersonFullName) error {
+func (Validator) ValidateDataToAdd(data *dto.AddPersonDTO) error {
 	return validation.ValidateStruct(data,
 		validation.Field(&data.Name, validation.Required, validation.Match(regexp.MustCompile(`^[A-Z][a-z]+$`))),
 		validation.Field(&data.Surname, validation.Required, validation.Match(regexp.MustCompile(`^[A-Z][a-z]+$`))),
