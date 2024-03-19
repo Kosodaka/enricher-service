@@ -7,7 +7,7 @@ build:
 	 GOOS=windows GOARCH=amd64 go build -o ${BINARY_NAME}-windows.exe cmd/app/main.go
 	 GOOS=linux GOARCH=amd64 go build -o ${BINARY_NAME}-linux.exe cmd/app/main.go
  #run windows build
- run-windows: build
+ run-win: build
 	${BINARY_NAME}-windows
 #run linux build
 run-linux: build
@@ -27,6 +27,8 @@ mock-gen:
 .PHONY: migrate
 migrate:
 	goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" up
+migrate-test:
+	goose -dir ./migrations postgres "postgres://user:password@localhost:5432/db_test?sslmode=disable" up
 .PHONY: migrate-down
 migrate-down:
 	goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" down

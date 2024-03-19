@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/Kosodaka/enricher-service/internal/adapters/app/response"
 	"github.com/Kosodaka/enricher-service/internal/adapters/app/service"
+	"github.com/Kosodaka/enricher-service/internal/domain/dto"
 	"github.com/Kosodaka/enricher-service/internal/domain/model"
-	domainservice "github.com/Kosodaka/enricher-service/internal/domain/service"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -30,7 +30,7 @@ func (r *PersonRouter) GetPerson(c *gin.Context) {
 	op := "app.GetPerson"
 	idStr := c.Param("id")
 	if idStr == "" {
-		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("no id in params"))
+		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf(" no id in params "))
 		log.Print(op, " :no id params")
 		return
 	}
@@ -65,7 +65,7 @@ func (r *PersonRouter) UpdatePerson(c *gin.Context) {
 		log.Print(op, " :failed to update person in service")
 		return
 	}
-	c.JSON(http.StatusOK, response.StatusResponse{Status: "ok"})
+	c.JSON(http.StatusOK, response.StatusResponse{"ok"})
 }
 
 func (r *PersonRouter) DeletePerson(c *gin.Context) {
@@ -83,7 +83,7 @@ func (r *PersonRouter) DeletePerson(c *gin.Context) {
 		log.Print(op, " :failed to delete person")
 		return
 	}
-	c.JSON(http.StatusOK, response.StatusResponse{Status: "ok"})
+	c.JSON(http.StatusOK, response.StatusResponse{"ok"})
 }
 
 func (r *PersonRouter) GetPersons(c *gin.Context) {
@@ -121,7 +121,7 @@ func (r *PersonRouter) GetPersons(c *gin.Context) {
 
 func (r *PersonRouter) AddPerson(c *gin.Context) {
 	op := "app.AddPerson"
-	var input domainservice.PersonFullName
+	var input dto.AddPersonDTO
 	if err := c.BindJSON(&input); err != nil {
 		response.NewErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("%s : failed to add person", err))
 		log.Print(op, " :failed to add persons")

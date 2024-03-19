@@ -8,5 +8,6 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o ./bin/enricher-service ./cmd/app/main.g
 
 FROM alpine:3.18.6
 COPY --from=builder /build/bin/enricher-service /
+COPY migrations /
 COPY .env /
 ENTRYPOINT ["/enricher-service"]
