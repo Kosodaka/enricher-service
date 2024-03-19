@@ -23,9 +23,6 @@ type dependencies struct {
 	enricher   *mock_enricher.MockEnricher
 	service    *mock_service.MockPersonService
 }
-type Options struct {
-	Repository
-}
 
 func TestService_AddPerson(t *testing.T) {
 	cases := []struct {
@@ -76,23 +73,26 @@ func TestService_AddPerson(t *testing.T) {
 			err:         validation.Errors{"name": domainErr.InvalidData},
 		},
 	}
+	ctrl := gomock.NewController(t)
+	valid := validator.NewValidator()
+	dependencies := &dependencies{
+		repository: mock_repository.NewMockPersonRepository(ctrl),
+		enricher:   mock_enricher.NewMockEnricher(ctrl),
+	}
+	logger := logger.SetupLogger("test")
+	svc := NewService()
+	svc.Init(SetLogger(logger), SetValidator(valid))
 	for _, testCases := range cases {
 		t.Run(testCases.name, func(t *testing.T) {
-			ctrl := gomock.NewController(t)
-			validator := validator.NewValidator()
-			dependencies := &dependencies{
-				repository: mock_repository.NewMockPersonRepository(ctrl),
-				enricher:   mock_enricher.NewMockEnricher(ctrl),
-			}
-			logger := logger.SetupLogger("test")
 			ctx, cansel := context.WithTimeout(context.Background(), testCases.deadline)
 			defer cansel()
 			if testCases.preparation != nil {
 				testCases.preparation(dependencies, testCases.input, testCases.enrichData, ctx, testCases.err)
 			}
-			service := NewService(dependencies.repository, dependencies.enricher, logger, validator)
+			svc.opts.Repository = dependencies.repository
+			svc.opts.Enricher = dependencies.enricher
 
-			result, err := service.AddPerson(ctx, testCases.input)
+			result, err := svc.AddPerson(ctx, testCases.input)
 			if result != testCases.output {
 				t.Errorf("got %d, want %d", result, testCases.output)
 			}

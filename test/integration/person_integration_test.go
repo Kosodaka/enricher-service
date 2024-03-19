@@ -2,6 +2,7 @@ package integration
 
 import (
 	"context"
+	"embed"
 	. "github.com/Eun/go-hit"
 	"github.com/Kosodaka/enricher-service/internal/adapters/app/app"
 	"github.com/Kosodaka/enricher-service/internal/adapters/app/router"
@@ -10,6 +11,7 @@ import (
 	"github.com/Kosodaka/enricher-service/internal/adapters/repository/postgres"
 	"github.com/Kosodaka/enricher-service/internal/domain/dto"
 	"github.com/Kosodaka/enricher-service/internal/domain/service"
+	"github.com/Kosodaka/enricher-service/migrations/migrate"
 	"github.com/Kosodaka/enricher-service/pkg/config"
 	"github.com/Kosodaka/enricher-service/pkg/logger"
 	mock_enricher "github.com/Kosodaka/enricher-service/pkg/mocks/api/enricher"
@@ -20,6 +22,8 @@ import (
 	"testing"
 	"time"
 )
+
+var embedMigrations embed.FS
 
 type TestSuite struct {
 	suite.Suite
@@ -33,7 +37,6 @@ type mocks struct {
 
 func (s *TestSuite) SetupSuite() {
 	// create db container
-
 	ctx, ctxCancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer ctxCancel()
 
@@ -53,7 +56,9 @@ func (s *TestSuite) SetupSuite() {
 	if err != nil {
 		panic(err)
 	}
+	err = migrate.Migrate(psqlContainer.GetDSN(), migrate.Migrations)
 	s.Require().NoError(err)
+
 	enricher := enricher.NewEnricher(cfg)
 	personRepository := repository.NewPersonPostgres(db)
 	personService := service.NewService()
@@ -84,6 +89,10 @@ func (s *TestSuite) TestAddPerson(t *testing.T) {
 	)
 }
 func (s *TestSuite) TearDownAddPerson() {
+
+}
+
+func (s *TestSuite) TearDownGetPerson() {
 
 }
 
