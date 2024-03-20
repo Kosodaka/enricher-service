@@ -55,7 +55,7 @@ func NewPostgreSQLContainer(ctx context.Context, opts ...PostgreSQLContainerOpti
 			Env: map[string]string{
 				"POSTGRES_HOST":     config.Host,
 				"POSTGRES_DB":       config.Database,
-				"POSTGRES_PORT":     config.Port,
+				"POSTGRES_PORT":     containerPort,
 				"POSTGRES_USER":     config.User,
 				"POSTGRES_PASSWORD": config.Password,
 			},

@@ -61,11 +61,59 @@ func TestService_AddPerson(t *testing.T) {
 			output: 1,
 			err:    nil,
 		}, {
-			name:     "invalid input data",
+			name:     "invalid name ",
 			deadline: time.Second * 10,
 			input: &dto.AddPersonDTO{
 				Name:    "danila",
 				Surname: "Ivashenko",
+			},
+			enrichData:  nil,
+			preparation: nil,
+			output:      0,
+			err:         validation.Errors{"name": domainErr.InvalidData},
+		},
+		{
+			name:     "name with symbols ",
+			deadline: time.Second * 10,
+			input: &dto.AddPersonDTO{
+				Name:    "Da-nila",
+				Surname: "Ivashenko",
+			},
+			enrichData:  nil,
+			preparation: nil,
+			output:      0,
+			err:         validation.Errors{"name": domainErr.InvalidData},
+		},
+		{
+			name:     "invalid surname",
+			deadline: time.Second * 10,
+			input: &dto.AddPersonDTO{
+				Name:    "Danila",
+				Surname: "shakirov",
+			},
+			enrichData:  nil,
+			preparation: nil,
+			output:      0,
+			err:         validation.Errors{"surname": domainErr.InvalidData},
+		},
+		{
+			name:     "surname with symbols",
+			deadline: time.Second * 10,
+			input: &dto.AddPersonDTO{
+				Name:    "Danila",
+				Surname: "Sha@kirov",
+			},
+			enrichData:  nil,
+			preparation: nil,
+			output:      0,
+			err:         validation.Errors{"surname": domainErr.InvalidData},
+		},
+		{
+			name:     "test duoble name",
+			deadline: time.Second * 10,
+			input: &dto.AddPersonDTO{
+				Name:    "Bette-ann",
+				Surname: "Goullee",
 			},
 			enrichData:  nil,
 			preparation: nil,
@@ -84,14 +132,16 @@ func TestService_AddPerson(t *testing.T) {
 	svc.Init(SetLogger(logger), SetValidator(valid))
 	for _, testCases := range cases {
 		t.Run(testCases.name, func(t *testing.T) {
+
 			ctx, cansel := context.WithTimeout(context.Background(), testCases.deadline)
 			defer cansel()
-			if testCases.preparation != nil {
-				testCases.preparation(dependencies, testCases.input, testCases.enrichData, ctx, testCases.err)
-			}
 
 			svc.opts.Repository = dependencies.repository
 			svc.opts.Enricher = dependencies.enricher
+
+			if testCases.preparation != nil {
+				testCases.preparation(dependencies, testCases.input, testCases.enrichData, ctx, testCases.err)
+			}
 
 			result, err := svc.AddPerson(ctx, testCases.input)
 			if result != testCases.output {
