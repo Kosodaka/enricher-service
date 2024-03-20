@@ -19,8 +19,6 @@ docker-up:
 	docker-compose up -d
 test:
 	go test -cover ./...
-integration-test:
-	 go test -tags integration ./test/integration/...
 .PHONY:mock-gen
 mock-gen:
 	mockgen -source=internal/adapters/app/service/person.go -destination=pkg/mocks/api/service/person_mock.go
@@ -29,6 +27,8 @@ mock-gen:
 .PHONY: migrate
 migrate:
 	goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" up
+integration-test:
+	go test -tags integration ./test/integration/...
 .PHONY: migrate-down
 migrate-down:
 	goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" down
