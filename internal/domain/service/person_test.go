@@ -89,6 +89,7 @@ func TestService_AddPerson(t *testing.T) {
 			if testCases.preparation != nil {
 				testCases.preparation(dependencies, testCases.input, testCases.enrichData, ctx, testCases.err)
 			}
+
 			svc.opts.Repository = dependencies.repository
 			svc.opts.Enricher = dependencies.enricher
 
