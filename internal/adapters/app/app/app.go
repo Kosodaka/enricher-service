@@ -107,6 +107,7 @@ func (r *PersonRouter) GetPersons(c *gin.Context) {
 		}
 		data.Age = ageInt
 	}
+
 	data.Gender = c.Query("gender")
 	data.Nationality = c.Query("nationality")
 

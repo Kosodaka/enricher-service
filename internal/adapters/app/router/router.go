@@ -41,7 +41,6 @@ func NewRouter(cfg Config, p personRouter) *Router {
 		PersonRouter: p,
 		Port:         cfg.GetHTTPPort(),
 	}
-
 	router.Server = gin.Default()
 	router.Server.Use(gin.Recovery())
 
