@@ -55,7 +55,6 @@ require (
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/itchyny/gojq v0.12.14 // indirect
 	github.com/itchyny/timefmt-go v0.1.5 // indirect
-	github.com/jarcoal/httpmock v1.3.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/k0kubun/pp v3.0.1+incompatible // indirect
 	github.com/klauspost/compress v1.17.4 // indirect

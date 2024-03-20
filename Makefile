@@ -27,8 +27,8 @@ mock-gen:
 .PHONY: migrate
 migrate:
 	goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" up
-integration-test:
-	go test -tags integration ./test/integration/...
+migrate-test:
+	goose -dir ./migrations postgres "postgres://user:password@localhost:5432/db_test?sslmode=disable" up
 .PHONY: migrate-down
 migrate-down:
 	goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" down
