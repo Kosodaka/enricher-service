@@ -11,7 +11,7 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
-	github.com/pressly/goose/v3 v3.19.2
+
 	github.com/stretchr/testify v1.9.0
 	github.com/testcontainers/testcontainers-go v0.29.1
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
@@ -26,6 +26,20 @@ require (
 	github.com/Microsoft/hcsshim v0.11.4 // indirect
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.17.6 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.18.16 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.13.16 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.24 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.30 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.24 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.31 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.24 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.12.5 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.5 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.18.6 // indirect
+	github.com/aws/smithy-go v1.13.5 // indirect
+	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/buger/goterm v1.0.4 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
@@ -55,6 +69,7 @@ require (
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/itchyny/gojq v0.12.14 // indirect
 	github.com/itchyny/timefmt-go v0.1.5 // indirect
+	github.com/jarcoal/httpmock v1.3.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/k0kubun/pp v3.0.1+incompatible // indirect
 	github.com/klauspost/compress v1.17.4 // indirect

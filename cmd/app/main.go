@@ -17,7 +17,6 @@ func main() {
 	if err := config.LoadEnv(".env"); err != nil {
 		panic(err)
 	}
-
 	cfg := config.LoadConfig()
 
 	logger := logger.SetupLogger(cfg.GetEnv())
