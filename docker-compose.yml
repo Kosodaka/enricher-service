@@ -2,44 +2,51 @@
 version: '3.9'
 
 services:
-    postgres:
-      container_name: postgres_container
-      image: postgres
-      network_mode: bridge
-      environment:
-        POSTGRES_HOST: ${POSTGRES_HOST}
-        POSTGRES_DB: ${POSTGRES_DB}
-        POSTGRES_PORT: ${POSTGRES_PORT}
-        POSTGRES_USER: ${POSTGRES_USER}
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-        POSTGRES_SSL_MODE: ${POSTGRES_SSL_MODE}
-      ports:
-      - - "${POSTGRES_PORT}:${POSTGRES_PORT}"
 
-
-    api:
-      build:
-        dockerfile: Dockerfile
-      container_name: api
-      network_mode: bridge
-      env_file:
+  api:
+    build:
+      dockerfile: Dockerfile
+    container_name: api
+    command:
+      go install github.com/pressly/goose/v3/cmd/goose@latest
+      goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" up
+    volumes:
+      - .:/build
+    env_file:
       - .env
-      environment:
-        POSTGRES_HOST: ${POSTGRES_HOST}
-        POSTGRES_DB: ${POSTGRES_DB}
-        POSTGRES_PORT: ${POSTGRES_PORT}
-        POSTGRES_USER: ${POSTGRES_USER}
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-        POSTGRES_SSL_MODE: ${POSTGRES_SSL_MODE}
-        ENV: ${ENV}
-        HTTP_PORT: ${HTTP_PORT}
-        HTTP_HOST: ${HTTP_HOST}
-        AGE_API_URL: ${AGE_API_URL}
-        GENDER_API_URL: ${GENDER_API_URL}
-        NATIONALITY_API_URL: ${NATIONALITY_API_URL}
-      ports:
-      - "${HTTP_PORT}:${HTTP_PORT}"
-      depends_on:
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_SSL_MODE: ${POSTGRES_SSL_MODE}
+      ENV: ${ENV}
+      HTTP_PORT: ${HTTP_PORT}
+      HTTP_HOST: ${HTTP_HOST}
+      AGE_API_URL: ${AGE_API_URL}
+      GENDER_API_URL: ${GENDER_API_URL}
+      NATIONALITY_API_URL: ${NATIONALITY_API_URL}
+    ports:
+      - ${HTTP_PORT}:${HTTP_PORT}
+    depends_on:
       - postgres
 
 
+  postgres:
+      container_name: postgres_container
+      volumes:
+        - pgdb:/var/lib/postgresql/data/
+      image: postgres
+      environment:
+        POSTGRES_HOST: ${POSTGRES_HOST}
+        POSTGRES_DB: ${POSTGRES_DB}
+        POSTGRES_PORT: ${POSTGRES_PORT}
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_SSL_MODE: ${POSTGRES_SSL_MODE}
+      ports:
+       - ${POSTGRES_PORT}:${POSTGRES_PORT}
+
+volumes:
+  pgdb:

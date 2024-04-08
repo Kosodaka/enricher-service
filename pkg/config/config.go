@@ -45,7 +45,7 @@ func LoadEnv(filenames ...string) error {
 
 func LoadConfig() *Config {
 	cfg := &Config{
-		PostgresDSN:       "",
+		PostgresDSN:       "postgres://admin:qwerty@localhost:5432/human?sslmode=disable",
 		Env:               "local",
 		HttpHost:          "localhost",
 		AgeApiUrl:         "https://api.agify.io/",

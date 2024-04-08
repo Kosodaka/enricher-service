@@ -3,6 +3,7 @@ WORKDIR /build
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
+#RUN go install github.com/pressly/goose/v3/cmd/goose@latest
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./bin/enricher-service ./cmd/app/main.go
 
