@@ -7,16 +7,16 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type PersonRepository struct {
+type personRepository struct {
 	db *sqlx.DB
 }
 
-func NewPersonPostgres(db *sqlx.DB) *PersonRepository {
-	return &PersonRepository{
+func NewPersonPostgres(db *sqlx.DB) *personRepository {
+	return &personRepository{
 		db: db,
 	}
 }
-func (r *PersonRepository) AddPerson(ctx context.Context, data *model.Person) (int, error) {
+func (r *personRepository) AddPerson(ctx context.Context, data *model.Person) (int, error) {
 	tx, err := r.db.BeginTxx(ctx, nil)
 	if err != nil {
 		return 0, err
@@ -44,7 +44,7 @@ func (r *PersonRepository) AddPerson(ctx context.Context, data *model.Person) (i
 	return id, nil
 }
 
-func (r *PersonRepository) GetPerson(ctx context.Context, id int) (*model.Person, error) {
+func (r *personRepository) GetPerson(ctx context.Context, id int) (*model.Person, error) {
 	stmt := "SELECT id, name, surname, patronymic, age, gender, nationality FROM person WHERE id = $1"
 	person := &model.Person{}
 	err := r.db.QueryRowxContext(ctx, stmt, id).StructScan(person)
@@ -55,7 +55,7 @@ func (r *PersonRepository) GetPerson(ctx context.Context, id int) (*model.Person
 	return person, nil
 }
 
-func (r *PersonRepository) GetPersons(ctx context.Context, data *model.Person) ([]model.Person, error) {
+func (r *personRepository) GetPersons(ctx context.Context, data *model.Person) ([]model.Person, error) {
 	stmt := `SELECT id, name, surname, patronymic, age, gender, nationality FROM person WHERE name = name AND surname = surname 
              AND patronymic = patronymic AND age = age AND gender = gender AND nationality = nationality`
 	persons := []model.Person{}
@@ -74,7 +74,7 @@ func (r *PersonRepository) GetPersons(ctx context.Context, data *model.Person) (
 	return persons, nil
 }
 
-func (r *PersonRepository) UpdatePerson(ctx context.Context, data *model.Person) error {
+func (r *personRepository) UpdatePerson(ctx context.Context, data *model.Person) error {
 	tx, err := r.db.BeginTxx(context.Background(), nil)
 	if err != nil {
 		return err
@@ -103,7 +103,7 @@ func (r *PersonRepository) UpdatePerson(ctx context.Context, data *model.Person)
 	return tx.Commit()
 }
 
-func (r *PersonRepository) DeletePerson(ctx context.Context, id int) error {
+func (r *personRepository) DeletePerson(ctx context.Context, id int) error {
 	tx, err := r.db.BeginTxx(ctx, nil)
 	if err != nil {
 		return err

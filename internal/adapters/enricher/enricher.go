@@ -105,20 +105,23 @@ func (e Enricher) Enrich(ctx context.Context, name string) (*enricher.EnrichData
 				Gender:      gender.Gender,
 				Nationality: nationality.CountryId,
 			}
+
 		}
+
 	}()
 
 	select {
 	case <-ctx.Done():
-		return nil, fmt.Errorf("error with enricher")
+		return nil, fmt.Errorf("error whith enricher")
 	case err := <-errCh:
 		return nil, err
 	case res := <-resCh:
 		return res, nil
 	}
+
 }
 
-// Come to api with request on env:AGE_API_URL and get Age.
+// Come to api with request on env:AGE_API_URL and get Age
 func (e Enricher) getAge(ctx context.Context, name string) (*PersonAge, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s?name=%s", e.AgeUrl, name), nil)
 	if err != nil {
@@ -141,7 +144,7 @@ func (e Enricher) getAge(ctx context.Context, name string) (*PersonAge, error) {
 	return age, nil
 }
 
-// Come to api with request on env:GENDER_API_URL and get gender.
+// Come to api with request on env:GENDER_API_URL and get gender
 func (e Enricher) getGender(ctx context.Context, name string) (*PersonGender, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s?name=%s", e.GenderUrl, name), nil)
 	if err != nil {
@@ -164,7 +167,7 @@ func (e Enricher) getGender(ctx context.Context, name string) (*PersonGender, er
 	return gender, nil
 }
 
-// Come to api with request on env:NATIONALITY_API_URL get nationality.
+// Come to api with request on env:NATIONALITY_API_URL get nationality
 func (e Enricher) getNationality(ctx context.Context, name string) (*PersonNationalities, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s?name=%s", e.NationalityUrl, name), nil)
 	if err != nil {

@@ -29,8 +29,6 @@ mock-gen:
 .PHONY: migrate
 migrate:
 	goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" up
-docker-migrate:
-	goose -dir ./migrations postgres "postgres://admin:qwerty@postgres:5432/human?sslmode=disable" up
 .PHONY: migrate-down
 migrate-down:
 	goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" down
