@@ -29,7 +29,6 @@ func (r *Router) InitRoutes() {
 	r.Server.GET("/persons", r.PersonRouter.GetPersons)
 	r.Server.PATCH("/person", r.PersonRouter.UpdatePerson)
 	r.Server.DELETE("/person", r.PersonRouter.DeletePerson)
-
 }
 
 func (r *Router) Run() error {

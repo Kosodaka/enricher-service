@@ -7,15 +7,14 @@ services:
     build:
       dockerfile: Dockerfile
     container_name: api
-    command:
-      go install github.com/pressly/goose/v3/cmd/goose@latest
-      goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" up
     volumes:
       - .:/build
+    networks:
+      - postgres
     env_file:
       - .env
     environment:
-      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_HOST: postgres
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PORT: ${POSTGRES_PORT}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -30,16 +29,19 @@ services:
     ports:
       - ${HTTP_PORT}:${HTTP_PORT}
     depends_on:
-      - postgres
+      - db
 
 
-  postgres:
+
+  db:
       container_name: postgres_container
       volumes:
         - pgdb:/var/lib/postgresql/data/
       image: postgres
+      networks:
+        - postgres
       environment:
-        POSTGRES_HOST: ${POSTGRES_HOST}
+        POSTGRES_HOST: postgres
         POSTGRES_DB: ${POSTGRES_DB}
         POSTGRES_PORT: ${POSTGRES_PORT}
         POSTGRES_USER: ${POSTGRES_USER}
@@ -48,5 +50,11 @@ services:
       ports:
        - ${POSTGRES_PORT}:${POSTGRES_PORT}
 
+
 volumes:
   pgdb:
+networks:
+  postgres:
+    driver: bridge
+    name: postgres_net
+

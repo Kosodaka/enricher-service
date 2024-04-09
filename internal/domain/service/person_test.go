@@ -132,7 +132,6 @@ func TestService_AddPerson(t *testing.T) {
 	svc.Init(SetLogger(logger), SetValidator(valid))
 	for _, testCases := range cases {
 		t.Run(testCases.name, func(t *testing.T) {
-
 			ctx, cansel := context.WithTimeout(context.Background(), testCases.deadline)
 			defer cansel()
 
@@ -226,6 +225,5 @@ func TestService_GetPerson(t *testing.T) {
 				t.Errorf("got %v, want %v", err, testCases.err)
 			}
 		})
-
 	}
 }
