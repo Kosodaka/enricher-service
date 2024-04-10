@@ -7,9 +7,6 @@ services:
     build:
       dockerfile: Dockerfile
     container_name: api
-    command:
-      go install github.com/pressly/goose/v3/cmd/goose@latest
-      goose -dir ./migrations postgres "postgres://admin:qwerty@localhost:5432/human?sslmode=disable" up
     volumes:
       - .:/build
     env_file:
